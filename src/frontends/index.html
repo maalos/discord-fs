@@ -1,5 +1,14 @@
 <html>
     <head>
+        <style>
+            * {
+                font-family: monospace;
+            }
+
+            li {
+            margin: 5px
+            }
+        </style>
         <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
         <link  rel="stylesheet" href="//use.fontawesome.com/releases/v5.7.1/css/all.css">
         <script type="text/javascript">
@@ -60,28 +69,27 @@
             let nameParts = name.replace(/\//g,"#/#").split("#");
             nameParts.shift();
             $(function(){
-                $("#formPath").val(name);
-                let path = "";
-                nameParts.forEach(function(item){
-                    path+=item;
-                    if(item == "/" && path != "/")
-                        $("#folderName").append($("<span>").text(item));
-                    else
-                        $("#folderName").append($("<a>").text(item).attr("href",path));
-                });
-                let prefix = (name.indexOf("/") == 0) ? ((name.length == 1) ? "" : name) : "/" + name;
-                content.forEach(function(item){
-                    if(item.type == "directory"){
-                        $("#folderContent").append($("<li>").addClass("folder").append($("<i>").addClass("fa-li fa fa-folder")).append($("<a>").text(item.name).attr("href",prefix+item.name)));
-                    }
-                     else{
-                         let extension = item.name.slice((item.name.lastIndexOf('.') - 1 >>> 0) + 2);
-                         let icon = extensions[extension];
-                         if(icon == null) icon = "fa-file";
-                        $("#folderContent").append($("<li>").addClass("file").append($("<i>").addClass("fa-li fa " + icon)).append($("<a>").text(item.name).attr("href",prefix+"/"+item.name)));
-                     }
-                 });
-            });
+              $("#formPath").val(name);
+              let path = "";
+              nameParts.forEach(function(item){
+                  path += "/" + item;  // Add a slash before appending each item
+                  if (item == "/" && path != "/")
+                      $("#folderName").append($("<span>").text(item));
+                  else
+                      $("#folderName").append($("<a>").text(item).attr("href", window.location.origin + path));
+              });
+              let prefix = (name.indexOf("/") == 0) ? ((name.length == 1) ? "" : name) : "/" + name;
+              content.forEach(function(item){
+                  if(item.type == "directory"){
+                      $("#folderContent").append($("<li>").addClass("folder").append($("<i>").addClass("fa-li fa fa-folder")).append($("<a>").text(item.name).attr("href", prefix + "/" + item.name)));
+                  } else {
+                      let extension = item.name.slice((item.name.lastIndexOf('.') - 1 >>> 0) + 2);
+                      let icon = extensions[extension];
+                      if (icon == null) icon = "fa-file";
+                      $("#folderContent").append($("<li>").addClass("file").append($("<i>").addClass("fa-li fa " + icon)).append($("<a>").text(item.name).attr("href", prefix + "/" + item.name)));
+                  }
+              });
+          });
         </script>
         <style type="text/css">
             #folderName a{
