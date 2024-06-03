@@ -6,8 +6,7 @@ discord-fs is a Discord bot that allows creating an encrypted virtual file syste
 * Theoretically unlimited file size thanks to splitting the file in 25MB chunks (discord is quite unreliable when it comes to uploading 20 files in a row without any issues)
 * FTP frontend
 * HTTP frontend (up & downloading) 
-    I've disabled it for now because of building complications on windows. You may wanna tinker with it, to enable, uncomment the lines in GuildStorageHandler.ts
-* (Incomplete) fuse frontend
+* (Incomplete, disabled by default) FUSE frontend
 * optional AES-256-CBC encryption (with per file iv, unreadable journal)
 
 ## Installation & Preparation
