@@ -33,8 +33,7 @@ You can clone or fork this repo and start from there (recommended if you want to
 ```
 git clone https://github.com/maalos/discord-fs.git
 cd discord-fs
-npm i -g yarn
-yarn install
+npm i
 cp .env.example .env
 ```
 
