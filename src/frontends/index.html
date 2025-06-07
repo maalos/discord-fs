@@ -1,13 +1,12 @@
 <html>
     <head>
-        <style>
-            * {
-                font-family: monospace;
-            }
-
-            li {
-            margin: 5px
-            }
+      <style>
+  * {
+    font-family: monospace;
+  }
+        li {
+          margin: 5px
+        }
         </style>
         <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
         <link  rel="stylesheet" href="//use.fontawesome.com/releases/v5.7.1/css/all.css">
@@ -68,13 +67,13 @@
             let name = "{NAME}";
             let nameParts = name.replace(/\//g,"#/#").split("#");
             nameParts.shift();
-            $(function(){
+          $(function(){
               $("#formPath").val(name);
               let path = "";
               nameParts.forEach(function(item){
-                  path += "/" + item;  // Add a slash before appending each item
+                  path += "/" + item;
                   if (item == "/" && path != "/")
-                      $("#folderName").append($("<span>").text(item));
+                      $("#folderName").append($("<a>").text(item).attr("href", "http://" + window.location.hostname));
                   else
                       $("#folderName").append($("<a>").text(item).attr("href", window.location.origin + path));
               });
@@ -86,7 +85,7 @@
                       let extension = item.name.slice((item.name.lastIndexOf('.') - 1 >>> 0) + 2);
                       let icon = extensions[extension];
                       if (icon == null) icon = "fa-file";
-                      $("#folderContent").append($("<li>").addClass("file").append($("<i>").addClass("fa-li fa " + icon)).append($("<a>").text(item.name).attr("href", prefix + "/" + item.name)));
+                      $("#folderContent").append($("<li>").addClass("file").append($("<i>").addClass("fa-li fa " + icon)).append($("<a>").text(item.name).attr("href", prefix + "/" + item.name).attr("download", item.name)));
                   }
               });
           });
