@@ -8,6 +8,26 @@ import IFrontend from "./IFrontend";
 import IJournal from "../backend/IJournal";
 import * as stream from "stream";
 
+function requireUploadAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const auth = req.headers.authorization;
+
+  if (!auth || !auth.startsWith("Basic ")) {
+    res.setHeader("WWW-Authenticate", 'Basic realm="Upload Area"');
+    return res.status(401).send("Authentication required.");
+  }
+
+  const base64Credentials = auth.split(" ")[1];
+  const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
+  const [, password] = credentials.split(":");
+
+  if (password === process.env.UPLOAD_PASSWORD) {
+    return next();
+  }
+
+  res.setHeader("WWW-Authenticate", 'Basic realm="Upload Area"');
+  return res.status(401).send("Invalid password.");
+}
+
 export default class HTTPFrontend implements IFrontend {
   private app: express.Express;
   private journal: IJournal;
@@ -36,7 +56,7 @@ export default class HTTPFrontend implements IFrontend {
   }
 
   private registerRoutes() {
-    this.app.post(/^.*$/, (req: any, res: any) => {
+    this.app.post(/^.*$/, requireUploadAuth, (req: any, res: any) => {
       let root: string = null;
       let file: stream.Stream = null;
       let fileName: string = null;
@@ -83,7 +103,5 @@ export default class HTTPFrontend implements IFrontend {
         });
       }
     });
-
   }
-
 }
