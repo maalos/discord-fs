@@ -14,7 +14,7 @@ export default class HTTPFrontend implements IFrontend{
     constructor(private port: number){
         this.app = express();
         this.app.use(busboy({
-            highWaterMark: 26214400
+            highWaterMark: 10 * 1024 * 1024
         }));
     }
 
