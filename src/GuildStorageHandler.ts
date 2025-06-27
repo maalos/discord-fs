@@ -6,20 +6,35 @@ import HTTPFrontend from "./frontends/HTTPFrontend";
 import IFrontend from "./frontends/IFrontend";
 
 export default class StorageHandler{
-   
+
     private journal: ChannelAttachmentHandler
+    private updatedJournal: ChannelAttachmentHandler
     private frontends : IFrontend[] = [];
 
     constructor(
-        private guild: Discord.Guild, 
+        private guild: Discord.Guild,
         private channel: Discord.TextChannel
         ){
-       
+
         this.journal = new ChannelAttachmentHandler(channel);
+        this.updatedJournal = new ChannelAttachmentHandler(channel);
+
+        setInterval(() => {
+            try {
+                console.log("Reloading the journal")
+                this.updatedJournal = new ChannelAttachmentHandler(channel);
+                this.updatedJournal.load();
+                this.journal = this.updatedJournal;
+            } catch (e) {
+                console.log(e);
+            }
+        }, 60000 * 60 * 24);
+
     }
 
     public async load(){
-        this.journal.load();
+        this.updatedJournal.load();
+        this.journal = this.updatedJournal;
         this.loadFrontends();
     }
 
@@ -28,7 +43,7 @@ export default class StorageHandler{
             let httpPort = process.env.HTTP_PORT;
             this.addFrontend(new HTTPFrontend(parseInt(httpPort)));
         }
-        
+
         if(process.env.LISTEN_IP != null && (process.env.FTP_PORT != null || process.env.PORT != null) && process.env.EXTERNAL_IP != null){
             let port = process.env.FTP_PORT || process.env.PORT;
             let listenIP = process.env.LISTEN_IP;
@@ -43,7 +58,7 @@ export default class StorageHandler{
         this.startFrontends();
     }
 
-    
+
     public addFrontend(frontend: IFrontend){
         this.frontends.push(frontend);
     }
